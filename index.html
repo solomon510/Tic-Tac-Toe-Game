@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .board {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2px;
+        }
+        button {
+            box-shadow: 0 0 10px rgb(24, 210, 204),
+                0 0 40px rgba(24, 210, 204, 0.6);
+        }
+    </style>
+</head>
+
+<body
+    class="p-[12px] box-border font-sans bg-[linear-gradient(to_right,rgba(255,255,255,.09)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.07)_1px,transparent_1px)] bg-[#121212] bg-size-[40px_40px] h-screen flex items-center justify-center">
+
+    <div class="js-container"></div>
+    <script src="https://unpkg.com/supersimpledev@8.6.4/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev@8.6.4/react-dom.js"></script>
+    <script src="https://unpkg.com/supersimpledev@8.6.4/babel.js"></script>
+
+    <script type="text/babel">
+        const container = document.querySelector(".js-container")
+        const root = ReactDOM.createRoot(container);
+
+        function PlayField({ field, setField, isPlayer1, setPlayer, isBegin, whoWon, setWinner, turn, setTurn, winner, setWin, blocked
+            , setBlocked }) {
+            function onClick(e) {
+                let f_ = [...field];
+                if (!isBegin || winner) return;
+                if (f_[e.target.id] != "") return;
+                if (isPlayer1) {
+                    f_[e.target.id] = "X";
+                    setField(f_)
+
+                } else {
+                    f_[e.target.id] = "O";
+                    setField(f_)
+                }
+                if ((f_[0] == f_[1]) && (f_[1] == f_[2]) && (f_[2] != "")) {
+                    setTurn(!turn);
+                    setWinner(f_[0])
+                    setWin(!winner)
+                    return;
+
+                } if ((f_[3] == f_[4]) && (f_[4] == f_[5]) && (f_[5] != "")) {
+                    setTurn(!turn);
+                    setWinner(f_[3])
+                    setWin(!winner)
+                    return;
+
+                } if ((f_[6] == f_[7]) && (f_[7] == f_[8]) && (f_[8] != "")) {
+                    setTurn(!turn);
+                    setWinner(f_[6])
+                    setWin(!winner)
+                    return;
+
+                } if ((f_[0] == f_[3]) && (f_[3] == f_[6]) && (f_[6] != "")) {
+                    setTurn(!turn);
+                    setWinner(f_[0])
+                    setWin(!winner)
+                    return;
+
+                } if ((f_[1] == f_[4]) && (f_[4] == f_[7]) && (f_[7] != "")) {
+                    setTurn(!turn);
+                    setWinner(f_[1])
+                    setWin(!winner)
+                    return;
+
+                } if ((f_[2] == f_[5]) && (f_[5] == f_[8]) && (f_[8] != "")) {
+                    setTurn(!turn);
+                    setWinner(f_[2])
+                    setWin(!winner)
+                    return;
+
+                } if ((f_[2] == f_[4]) && (f_[4] == f_[6]) && (f_[6] != "")) {
+                    setTurn(!turn);
+                    setWinner(f_[2])
+                    setWin(!winner)
+                    return;
+
+                } if ((f_[0] == f_[4]) && (f_[4] == f_[8]) && (f_[8] != "")) {
+                    setTurn(!turn);
+                    setWinner(f_[0])
+                    setWin(!winner)
+                    return;
+
+                }
+                setBlocked(f_.every((v) => v !== "") ? !blocked : blocked);
+                setPlayer(!isPlayer1);
+            }
+            const grid = field.map((_, i) => {
+                return (<div key={crypto.randomUUID()} className="flex items-center justify-center text-xl h-[75px] bg-[rgba(255,255,255,0.1)] border-[rgba(255,255,255,0.25)] cursor-pointer" id={i}>{_}</div>);
+            })
+            return (
+                <div className="board h-[230px] w-[140px] md:w-[150px]" onClick={onClick}>
+                    {grid}
+                </div>
+            )
+        }
+
+
+        function App() {
+            const [field, setField] = React.useState(Array(9).fill(""));
+            const [isBegin, setBegin] = React.useState(false)
+            const [isPlayer1, setPlayer] = React.useState(true);
+            const [whoWon, setWinner] = React.useState("");
+            const [turn, setTurn] = React.useState(true);
+            const [winner, setWin] = React.useState(false);
+            const [blocked, setBlocked] = React.useState(false);
+            function refresh() {
+                setField(Array(9).fill(""));
+                setPlayer(true);
+                setBegin(false);
+                setWin(false);
+                setWinner("");
+                setBlocked(false);
+                setTurn(true);
+                setBegin(true);
+            }
+            return (
+                <div className="w-3xs md:w-[340px] h-[400px] bg-[rgba(192,192,192,0.2)] border-[rgba(255,255,255,0.3)] shadow-xl backdrop-blur-xl rounded-xl flex items-center flex-col p-[12px]">
+                    {isBegin ? <h2 className={`text-white ${turn ? '' : 'hidden'} text-2xl mb-[18px]`}>player {isPlayer1 ? "1" : "2"}</h2> : <button
+                        className="outline-none bg-[rgb(24,210,204)] p-[8px_16px] md:p-[10px_20px] text-[1.1rem] text-white rounded-lg my-[18px] cursor-pointer"
+                        onClick={() => {
+                            setBegin(!isBegin);
+                        }}>Start</button>}
+                    <h2 className={`${winner ? '' : 'hidden'} text-2xl mb-[18px] text-white`}>Player {whoWon == "X" ? "1 Won" : "2 Won"}</h2>
+                    <PlayField
+                        field={field}
+                        setField={setField}
+                        isPlayer1={isPlayer1}
+                        setPlayer={setPlayer}
+                        isBegin={isBegin}
+                        whoWon={whoWon}
+                        setWinner={setWinner}
+                        turn={turn}
+                        setTurn={setTurn}
+                        winner={winner}
+                        setWin={setWin}
+                        blocked={blocked}
+                        setBlocked={setBlocked}  
+
+                    />
+                    {(winner || blocked) && <button
+                        className="outline-none bg-[rgb(24,210,204)] p-[8px_16px] md:p-[10px_20px] text-[1.1rem] text-white rounded-lg my-[18px] cursor-pointer"
+                        onClick={refresh}>Play again</button>}
+                </div>
+            )
+        }
+
+        root.render(<App />);
+
+    </script>
+
+
+</body>
+
+</html>
